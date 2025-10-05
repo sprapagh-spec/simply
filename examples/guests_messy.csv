@@ -1,0 +1,7 @@
+Email,First Name,Last Name,Household,Address
+ALICE@SMITH.COM, alice  , SMItH ,The Smiths,1 Main St
+bob@smith.com,Bob,Smith,,1 Main St
+carol@doe.org,Carol,Doe,,22 Oak Ave
+dave@doe.org, dave  ,  doe ,Doe Household,22 Oak Ave
+,,Unknown,,
+

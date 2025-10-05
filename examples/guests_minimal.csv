@@ -1,0 +1,7 @@
+email,first_name,last_name,household,address
+alice@smith.com,Alice,Smith,The Smiths,1 Main St
+bob@smith.com,Bob,Smith,The Smiths,1 Main St
+carol@doe.org,Carol,Doe,Doe Household,22 Oak Ave
+dave@doe.org,Dave,Doe,Doe Household,22 Oak Ave
+eve@example.com,Eve,Adams,,
+
