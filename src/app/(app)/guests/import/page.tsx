@@ -22,6 +22,8 @@ export default function ImportGuestsPage() {
   const [mapping, setMapping] = useState<Mapping | null>(null);
   const [preview, setPreview] = useState<any | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [googleSheetsUrl, setGoogleSheetsUrl] = useState('');
+  const [loadingSheets, setLoadingSheets] = useState(false);
 
   function onFile(file: File) {
     setFileName(file.name);
@@ -33,24 +35,61 @@ export default function ImportGuestsPage() {
         setRawRows(data);
         const hdrs = results.meta.fields ?? Object.keys(data[0] ?? {});
         setHeaders(hdrs);
-        // naive auto-map
-        const lower = hdrs.map((h) => h.toLowerCase());
-        const pick = (candidates: string[]) => {
-          for (const c of candidates) {
-            const i = lower.indexOf(c);
-            if (i !== -1) return hdrs[i];
-          }
-          return null;
-        };
-        setMapping({
-          email: pick(['email']) ,
-          first_name: pick(['first_name', 'first name', 'firstname']) ?? hdrs[0] ?? '',
-          last_name: pick(['last_name', 'last name', 'lastname']) ?? hdrs[1] ?? '',
-          household: pick(['household', 'household name']),
-          address: pick(['address', 'street']),
-        });
+        autoMapColumns(hdrs);
       },
     });
+  }
+
+  function autoMapColumns(hdrs: string[]) {
+    const lower = hdrs.map((h) => h.toLowerCase());
+    const pick = (candidates: string[]) => {
+      for (const c of candidates) {
+        const i = lower.indexOf(c);
+        if (i !== -1) return hdrs[i];
+      }
+      return null;
+    };
+    setMapping({
+      email: pick(['email']) ,
+      first_name: pick(['first_name', 'first name', 'firstname']) ?? hdrs[0] ?? '',
+      last_name: pick(['last_name', 'last name', 'lastname']) ?? hdrs[1] ?? '',
+      household: pick(['household', 'household name']),
+      address: pick(['address', 'street']),
+    });
+  }
+
+  async function loadGoogleSheets() {
+    if (!googleSheetsUrl.trim()) return;
+    setLoadingSheets(true);
+    try {
+      // Convert Google Sheets share URL to CSV export URL
+      const sheetId = googleSheetsUrl.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+      if (!sheetId) {
+        alert('Invalid Google Sheets URL. Please use a shareable link.');
+        return;
+      }
+      
+      const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+      const response = await fetch(csvUrl);
+      const csvText = await response.text();
+      
+      Papa.parse<Row>(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          const data = (results.data as Row[]).filter((r) => Object.keys(r).length > 0);
+          setRawRows(data);
+          const hdrs = results.meta.fields ?? Object.keys(data[0] ?? {});
+          setHeaders(hdrs);
+          setFileName('Google Sheets Import');
+          autoMapColumns(hdrs);
+        },
+      });
+    } catch (error) {
+      alert('Failed to load Google Sheets. Make sure the sheet is publicly viewable.');
+    } finally {
+      setLoadingSheets(false);
+    }
   }
 
   const mappedRows = useMemo(() => {
@@ -83,7 +122,34 @@ export default function ImportGuestsPage() {
   return (
     <main className="p-6">
       <h1 className="text-xl font-semibold">Import Guests</h1>
-      <div className="mt-4 rounded border p-6">
+      
+      {/* Google Sheets Import */}
+      <div className="mt-4 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
+        <h2 className="text-lg font-semibold text-blue-800 mb-3">📊 Import from Google Sheets</h2>
+        <div className="space-y-3">
+          <input
+            type="url"
+            placeholder="Paste Google Sheets shareable link here..."
+            value={googleSheetsUrl}
+            onChange={(e) => setGoogleSheetsUrl(e.target.value)}
+            className="w-full rounded border border-blue-300 bg-white p-3 text-sm"
+          />
+          <button
+            onClick={loadGoogleSheets}
+            disabled={loadingSheets || !googleSheetsUrl.trim()}
+            className="rounded bg-blue-600 px-4 py-2 text-white text-sm hover:bg-blue-700 disabled:opacity-50"
+          >
+            {loadingSheets ? 'Loading...' : 'Load from Google Sheets'}
+          </button>
+          <p className="text-xs text-blue-600">
+            💡 Make sure your Google Sheet is set to "Anyone with the link can view"
+          </p>
+        </div>
+      </div>
+
+      {/* CSV File Upload */}
+      <div className="mt-6 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-3">📁 Or Upload CSV File</h2>
         <input
           type="file"
           accept=".csv,text/csv"
@@ -91,8 +157,9 @@ export default function ImportGuestsPage() {
             const f = e.target.files?.[0];
             if (f) onFile(f);
           }}
+          className="w-full rounded border border-gray-300 bg-white p-3 text-sm"
         />
-        {fileName && <p className="mt-2 text-sm text-muted-foreground">Loaded {fileName}</p>}
+        {fileName && <p className="mt-2 text-sm text-gray-600">✅ Loaded {fileName}</p>}
       </div>
 
       {headers.length > 0 && mapping && (
