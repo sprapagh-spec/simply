@@ -1,7 +1,9 @@
 import { getGuestsWithLastGift } from '@/app/(app)/guests/actions';
 import Link from 'next/link';
 import { RsvpStatusPill } from '@/components/RsvpStatusPill';
-import { GiftAmountCell } from '@/components/GiftAmountCell';
+import { GiftTooltip } from '@/components/GiftTooltip';
+import { EditableGiftAmount } from '@/components/EditableGiftAmount';
+import { updateGiftAmount, createManualGift } from '@/app/(app)/guests/gift-actions';
 
 export default async function GuestsPage() {
   const guests = await getGuestsWithLastGift();
@@ -16,7 +18,6 @@ export default async function GuestsPage() {
         <nav className="flex flex-col gap-1 p-2">
           <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium bg-primary text-primary-foreground">Guests</a>
           <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50 transition-all">Gifts</a>
-          <a href="/thank-you" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50 transition-all">Thank-You Notes</a>
         </nav>
       </aside>
       <main className="flex-1 p-8">
@@ -68,17 +69,31 @@ export default async function GuestsPage() {
                             <RsvpStatusPill guestId={g.id} status={g.rsvpStatus} />
                           </td>
                           <td className="px-6 py-4">
-                            <GiftAmountCell 
-                              guestId={g.id} 
-                              gift={lastGift ? {
-                                id: lastGift.id,
-                                amountNetCents: lastGift.amountNetCents,
-                                currency: lastGift.currency,
-                                amountGrossCents: lastGift.amountGrossCents,
-                                platformFeeCents: lastGift.platformFeeCents,
-                                processingFeeCents: lastGift.processingFeeCents,
-                              } : undefined}
-                            />
+                            {lastGift ? (
+                              <GiftTooltip gift={lastGift}>
+                                <EditableGiftAmount
+                                  guestId={g.id}
+                                  giftId={lastGift.id}
+                                  amountCents={lastGift.amountNetCents}
+                                  currency={lastGift.currency}
+                                  onUpdate={async (newAmount) => {
+                                    await updateGiftAmount(lastGift.id, newAmount);
+                                  }}
+                                />
+                              </GiftTooltip>
+                            ) : (
+                              <button
+                                onClick={async () => {
+                                  const amount = prompt('Enter gift amount (e.g., 25.00):');
+                                  if (amount && !isNaN(parseFloat(amount))) {
+                                    await createManualGift(g.id, Math.round(parseFloat(amount) * 100), 'cash');
+                                  }
+                                }}
+                                className="text-muted text-[15px] hover:text-primary transition-colors"
+                              >
+                                + Add Gift
+                              </button>
+                            )}
                           </td>
                           <td className="px-6 py-4 text-muted text-[15px]">
                             {lastGift ? lastGift.createdAt.toLocaleDateString('en-US', {

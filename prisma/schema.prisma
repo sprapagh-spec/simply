@@ -40,6 +40,7 @@ model Guest {
   auditLogs        AuditLog[]
   gifts            Gift[]
   emails           Email[]
+  thankYouNotes    ThankYouNote[]
   portalToken      String?     @unique
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
@@ -98,6 +99,7 @@ model EmailEvent {
   id        String   @id @default(cuid())
   emailId   String
   type      String   // sent, open, click, bounce, unsubscribe
+  kind      String   @default("INVITATION") // INVITATION, REMINDER, THANK_YOU
   timestamp DateTime @default(now())
   email     Email    @relation(fields: [emailId], references: [id])
 }
@@ -115,6 +117,7 @@ model Gift {
   memo           String?
   receivedAt     DateTime @default(now())
   stripePaymentIntentId String?
+  thankedAt      DateTime? // set when a THANK_YOU email has been sent successfully
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   guest          Guest    @relation(fields: [guestId], references: [id])
@@ -173,5 +176,33 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model ThankYouTemplate {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  thumbnailUrl  String?  // small preview image or data URL
+  html          String   // MJML/HTML used for email body
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  notes         ThankYouNote[]
+}
+
+model ThankYouNote {
+  id            String   @id @default(cuid())
+  guestId       String
+  giftId        String?  // optional if thanking without a gift record
+  templateId    String
+  subject       String
+  bodyHtml      String
+  status        String   // "draft" | "queued" | "sent" | "failed"
+  scheduledAt   DateTime?
+  sentAt        DateTime?
+  lastError     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  guest         Guest    @relation(fields: [guestId], references: [id])
+  template      ThankYouTemplate @relation(fields: [templateId], references: [id])
 }
 
