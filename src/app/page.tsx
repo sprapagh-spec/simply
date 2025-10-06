@@ -16,7 +16,6 @@ export default async function GuestsPage() {
         <nav className="flex flex-col gap-1 p-2">
           <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium bg-primary text-primary-foreground">Guests</a>
           <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50 transition-all">Gifts</a>
-          <a href="/thank-you" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50 transition-all">Thank-You Notes</a>
         </nav>
       </aside>
       <main className="flex-1 p-8">
@@ -77,6 +76,7 @@ export default async function GuestsPage() {
                                 amountGrossCents: lastGift.amountGrossCents,
                                 platformFeeCents: lastGift.platformFeeCents,
                                 processingFeeCents: lastGift.processingFeeCents,
+                                thankedAt: lastGift.thankedAt,
                               } : undefined}
                             />
                           </td>

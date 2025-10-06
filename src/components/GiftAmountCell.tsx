@@ -3,6 +3,7 @@
 import { EditableGiftAmount } from './EditableGiftAmount';
 import { GiftTooltip } from './GiftTooltip';
 import { updateGiftAmount, createManualGift } from '@/app/(app)/guests/gift-actions';
+import Link from 'next/link';
 
 interface GiftAmountCellProps {
   guestId: string;
@@ -13,6 +14,7 @@ interface GiftAmountCellProps {
     amountGrossCents: number;
     platformFeeCents: number;
     processingFeeCents: number;
+    thankedAt?: Date | null;
   };
 }
 
@@ -34,16 +36,32 @@ export function GiftAmountCell({ guestId, gift }: GiftAmountCellProps) {
   }
 
   return (
-    <GiftTooltip gift={gift}>
-      <EditableGiftAmount
-        guestId={guestId}
-        giftId={gift.id}
-        amountCents={gift.amountNetCents}
-        currency={gift.currency}
-        onUpdate={async (newAmount) => {
-          await updateGiftAmount(gift.id, newAmount);
-        }}
-      />
-    </GiftTooltip>
+    <div className="flex items-center gap-2">
+      <GiftTooltip gift={gift}>
+        <EditableGiftAmount
+          guestId={guestId}
+          giftId={gift.id}
+          amountCents={gift.amountNetCents}
+          currency={gift.currency}
+          onUpdate={async (newAmount) => {
+            await updateGiftAmount(gift.id, newAmount);
+          }}
+        />
+      </GiftTooltip>
+      {!gift.thankedAt && (
+        <Link
+          href={`/thank-you/compose?guests=${guestId}`}
+          className="text-xs text-primary hover:text-primary-hover transition-colors"
+          title="Send Thank-You Note"
+        >
+          💌
+        </Link>
+      )}
+      {gift.thankedAt && (
+        <span className="text-xs text-success" title={`Thanked on ${gift.thankedAt.toLocaleDateString()}`}>
+          ✅
+        </span>
+      )}
+    </div>
   );
 }
