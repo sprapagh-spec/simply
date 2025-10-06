@@ -1,7 +1,8 @@
 import { getGuestsWithLastGift } from '@/app/(app)/guests/actions';
 import Link from 'next/link';
 import { RsvpStatusPill } from '@/components/RsvpStatusPill';
-import { GiftAmountCell } from '@/components/GiftAmountCell';
+import { GiftTooltip } from '@/components/GiftTooltip';
+import { formatCurrency } from '@/lib/currency';
 
 export default async function GuestsPage() {
   const guests = await getGuestsWithLastGift();
@@ -54,7 +55,7 @@ export default async function GuestsPage() {
                   <tbody className="divide-y divide-brand-100">
                     {guests.map((g) => {
                       const lastGift = g.lastGift;
-
+                      
                       return (
                         <tr key={g.id} className="hover:bg-brand-50 transition-all odd:bg-brand-50/30">
                           <td className="px-6 py-4">
@@ -67,17 +68,15 @@ export default async function GuestsPage() {
                             <RsvpStatusPill guestId={g.id} status={g.rsvpStatus} />
                           </td>
                           <td className="px-6 py-4">
-                            <GiftAmountCell 
-                              guestId={g.id} 
-                              gift={lastGift ? {
-                                id: lastGift.id,
-                                amountNetCents: lastGift.amountNetCents,
-                                currency: lastGift.currency,
-                                amountGrossCents: lastGift.amountGrossCents,
-                                platformFeeCents: lastGift.platformFeeCents,
-                                processingFeeCents: lastGift.processingFeeCents,
-                              } : undefined}
-                            />
+                            {lastGift ? (
+                              <GiftTooltip gift={lastGift}>
+                                <span className="font-medium text-ink text-[15px]">
+                                  {formatCurrency(lastGift.amountNetCents, lastGift.currency)}
+                                </span>
+                              </GiftTooltip>
+                            ) : (
+                              <span className="text-muted text-[15px]">—</span>
+                            )}
                           </td>
                           <td className="px-6 py-4 text-muted text-[15px]">
                             {lastGift ? lastGift.createdAt.toLocaleDateString('en-US', {
@@ -99,3 +98,4 @@ export default async function GuestsPage() {
     </div>
   );
 }
+

@@ -9,11 +9,10 @@ type Mapping = {
   email: string | null;
   first_name: string;
   last_name: string;
-  household: string | null;
   address: string | null;
 };
 
-const defaultFields = ['email', 'first_name', 'last_name', 'household', 'address'] as const;
+const defaultFields = ['email', 'first_name', 'last_name', 'address'] as const;
 
 export default function ImportGuestsPage() {
   const [headers, setHeaders] = useState<string[]>([]);
@@ -53,7 +52,6 @@ export default function ImportGuestsPage() {
       email: pick(['email']),
       first_name: pick(['first_name', 'first name', 'firstname']) ?? hdrs[0] ?? '',
       last_name: pick(['last_name', 'last name', 'lastname']) ?? hdrs[1] ?? '',
-      household: pick(['household', 'household name']),
       address: pick(['address', 'street']),
     });
   }
@@ -98,7 +96,6 @@ export default function ImportGuestsPage() {
       email: mapping.email ? r[mapping.email] ?? '' : '',
       first_name: r[mapping.first_name] ?? '',
       last_name: r[mapping.last_name] ?? '',
-      household: mapping.household ? r[mapping.household] ?? '' : '',
       address: mapping.address ? r[mapping.address] ?? '' : '',
     }));
   }, [rawRows, mapping]);
@@ -198,7 +195,7 @@ export default function ImportGuestsPage() {
           {headers.length > 0 && mapping && (
             <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8 mt-6">
               <h2 className="font-semibold text-xl text-ink mb-6">Map Columns</h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-2">
                 {defaultFields.map((f) => (
                   <div key={f} className="space-y-2">
                     <label className="text-sm font-medium text-ink capitalize">
@@ -239,10 +236,6 @@ export default function ImportGuestsPage() {
                     <div className="text-2xl font-bold text-danger">{preview.errors.length}</div>
                     <div className="text-sm text-danger">Errors</div>
                   </div>
-                  <div className="text-center p-4 rounded-2xl bg-brand-50">
-                    <div className="text-2xl font-bold text-primary">{preview.households.length}</div>
-                    <div className="text-sm text-primary">Households</div>
-                  </div>
                 </div>
                 {preview.errors.length > 0 && (
                   <div className="mt-4 p-4 rounded-2xl bg-accent">
@@ -260,7 +253,7 @@ export default function ImportGuestsPage() {
               <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8">
                 <h3 className="font-semibold text-xl text-ink mb-4">Ready to Import</h3>
                 <p className="text-muted mb-6">
-                  {preview.cleaned.length} guests will be imported with {preview.households.length} households detected.
+                  {preview.cleaned.length} guests will be imported.
                 </p>
                 <button
                   className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all disabled:opacity-50"
