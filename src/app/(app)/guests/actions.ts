@@ -32,19 +32,25 @@ export async function updateRsvpStatus(guestId: string, rsvpStatus: RsvpStatus) 
 export async function getGuestsWithLastGift() {
   try {
     const guests = await prisma.guest.findMany({
-      include: {
-        gifts: {
-          orderBy: { createdAt: 'desc' },
-          take: 1,
-        },
-      },
       orderBy: { firstName: 'asc' },
     });
 
-    return guests.map(guest => ({
-      ...guest,
-      lastGift: guest.gifts[0] || null,
-    }));
+    // Get last gift for each guest separately to avoid complex joins
+    const guestsWithGifts = await Promise.all(
+      guests.map(async (guest) => {
+        const lastGift = await prisma.gift.findFirst({
+          where: { guestId: guest.id },
+          orderBy: { createdAt: 'desc' },
+        });
+        
+        return {
+          ...guest,
+          lastGift,
+        };
+      })
+    );
+
+    return guestsWithGifts;
   } catch (error) {
     console.error('Error fetching guests:', error);
     return [];
