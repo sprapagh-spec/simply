@@ -88,12 +88,12 @@ export default function ThemePreviewPage() {
               <input 
                 type="text" 
                 placeholder="Input placeholder"
-                className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
             </div>
             <div>
               <label className="block text-sm font-medium text-ink mb-2">Select</label>
-              <select className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all">
+              <select className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
                 <option>Option 1</option>
                 <option>Option 2</option>
                 <option>Option 3</option>
@@ -104,7 +104,7 @@ export default function ThemePreviewPage() {
               <textarea 
                 placeholder="Textarea placeholder"
                 rows={3}
-                className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all resize-none"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
               />
             </div>
           </div>

@@ -153,12 +153,12 @@ export default function ImportGuestsPage() {
                 placeholder="https://docs.google.com/spreadsheets/d/..."
                 value={googleSheetsUrl}
                 onChange={(e) => setGoogleSheetsUrl(e.target.value)}
-                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
               <button
                 onClick={loadGoogleSheets}
                 disabled={loadingSheets || !googleSheetsUrl.trim()}
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all disabled:opacity-50"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all disabled:opacity-50"
               >
                 {loadingSheets ? 'Loading...' : 'Load from Google Sheets'}
               </button>
@@ -185,7 +185,7 @@ export default function ImportGuestsPage() {
                   const f = e.target.files?.[0];
                   if (f) onFile(f);
                 }}
-                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
               {fileName && (
                 <div className="flex items-center gap-2 text-sm text-success">
@@ -205,7 +205,7 @@ export default function ImportGuestsPage() {
                       {f.replace('_', ' ')}
                     </label>
                     <select
-                      className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
+                      className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                       value={(mapping as any)[f] ?? ''}
                       onChange={(e) => setMapping({ ...mapping, [f]: e.target.value || null })}
                     >
@@ -218,7 +218,7 @@ export default function ImportGuestsPage() {
                 ))}
               </div>
               <button
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all mt-6"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all mt-6"
                 onClick={onPreview}
               >
                 Validate & Preview
@@ -263,7 +263,7 @@ export default function ImportGuestsPage() {
                   {preview.cleaned.length} guests will be imported with {preview.households.length} households detected.
                 </p>
                 <button
-                  className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all disabled:opacity-50"
                   onClick={onCommit}
                   disabled={submitting || preview.cleaned.length === 0}
                 >
