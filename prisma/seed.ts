@@ -18,18 +18,18 @@ async function main() {
   const doe = await prisma.household.create({ data: { name: 'Doe Household', emailDomain: 'doe.org' } });
 
   const guests = await prisma.$transaction([
-    prisma.guest.create({ data: { email: 'alice@smith.com', firstName: 'Alice', lastName: 'Smith', householdId: smith.id } }),
-    prisma.guest.create({ data: { email: 'bob@smith.com', firstName: 'Bob', lastName: 'Smith', householdId: smith.id } }),
-    prisma.guest.create({ data: { email: 'carol@doe.org', firstName: 'Carol', lastName: 'Doe', householdId: doe.id } }),
-    prisma.guest.create({ data: { email: 'dave@doe.org', firstName: 'Dave', lastName: 'Doe', householdId: doe.id } }),
-    prisma.guest.create({ data: { email: 'eve@example.com', firstName: 'Eve', lastName: 'Adams' } }),
-    prisma.guest.create({ data: { email: 'frank@example.com', firstName: 'Frank', lastName: 'Baker' } }),
-    prisma.guest.create({ data: { email: 'grace@example.com', firstName: 'Grace', lastName: 'Carter' } }),
-    prisma.guest.create({ data: { email: 'heidi@example.com', firstName: 'Heidi', lastName: 'Foster' } }),
-    prisma.guest.create({ data: { email: 'ivan@example.com', firstName: 'Ivan', lastName: 'Grant' } }),
-    prisma.guest.create({ data: { email: 'judy@example.com', firstName: 'Judy', lastName: 'Hill' } }),
-    prisma.guest.create({ data: { email: 'kate@example.com', firstName: 'Kate', lastName: 'Irwin' } }),
-    prisma.guest.create({ data: { email: 'leo@example.com', firstName: 'Leo', lastName: 'Jones' } }),
+    prisma.guest.create({ data: { email: 'alice@smith.com', firstName: 'Alice', lastName: 'Smith', householdId: smith.id, rsvpStatus: 'ATTENDING' } }),
+    prisma.guest.create({ data: { email: 'bob@smith.com', firstName: 'Bob', lastName: 'Smith', householdId: smith.id, rsvpStatus: 'MAYBE' } }),
+    prisma.guest.create({ data: { email: 'carol@doe.org', firstName: 'Carol', lastName: 'Doe', householdId: doe.id, rsvpStatus: 'INVITED' } }),
+    prisma.guest.create({ data: { email: 'dave@doe.org', firstName: 'Dave', lastName: 'Doe', householdId: doe.id, rsvpStatus: 'NOT_ATTENDING' } }),
+    prisma.guest.create({ data: { email: 'eve@example.com', firstName: 'Eve', lastName: 'Adams', rsvpStatus: 'OPENED' } }),
+    prisma.guest.create({ data: { email: 'frank@example.com', firstName: 'Frank', lastName: 'Baker', rsvpStatus: 'NOT_INVITED' } }),
+    prisma.guest.create({ data: { email: 'grace@example.com', firstName: 'Grace', lastName: 'Carter', rsvpStatus: 'INVITED' } }),
+    prisma.guest.create({ data: { email: 'heidi@example.com', firstName: 'Heidi', lastName: 'Foster', rsvpStatus: 'ATTENDING' } }),
+    prisma.guest.create({ data: { email: 'ivan@example.com', firstName: 'Ivan', lastName: 'Grant', rsvpStatus: 'MAYBE' } }),
+    prisma.guest.create({ data: { email: 'judy@example.com', firstName: 'Judy', lastName: 'Hill', rsvpStatus: 'INVITED' } }),
+    prisma.guest.create({ data: { email: 'kate@example.com', firstName: 'Kate', lastName: 'Irwin', rsvpStatus: 'NOT_INVITED' } }),
+    prisma.guest.create({ data: { email: 'leo@example.com', firstName: 'Leo', lastName: 'Jones', rsvpStatus: 'UNDELIVERABLE' } }),
   ]);
 
   const amounts = [2500, 5000, 10000, 2000, 7500, 3000];

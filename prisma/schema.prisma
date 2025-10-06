@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Note: SQLite doesn't support enums, so we use string with validation
+
 model Household {
   id           String   @id @default(cuid())
   name         String?
@@ -31,6 +33,8 @@ model Guest {
   household        Household?  @relation(fields: [householdId], references: [id])
   tags             GuestTag[]
   status           String      @default("invited") // invited, responded, bounced, unsubscribed
+  rsvpStatus       String      @default("NOT_INVITED") // NOT_INVITED, INVITED, OPENED, ATTENDING, NOT_ATTENDING, MAYBE, UNDELIVERABLE
+  rsvpUpdatedAt    DateTime?
   consentSource    String      @default("implied")
   consentTimestamp DateTime?
   auditLogs        AuditLog[]
