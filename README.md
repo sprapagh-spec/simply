@@ -45,12 +45,42 @@ npm run dev
 Open `http://localhost:3000`.
 
 ## Features implemented (MVP)
-- CSV import flow: upload, auto-map, validate (Zod), dedupe (email + fuzzy name), household inference (household name or email domain), review and commit.
-- Exports:
-  - `GET /api/exports/guests` → Guests.csv
-  - `GET /api/exports/ledger` → Ledger.csv
+- **Guest Import**: CSV and Google Sheets import with column mapping, validation, and deduplication
+- **Guest Management**: View and manage guest information with lifetime gift tracking
+- **Gift Tracking**: Track gifts with detailed fee calculations and breakdowns
+- **Export**: Export guest data and gift ledger as CSV
+- **Beautiful UI**: Joyful Minimalism design system with Open Sans typography
 - Fee calculation util with tests (`npm run test`).
 - Seed script with sample data.
+
+## Design System
+
+This app uses a "Joyful Minimalism" design system inspired by WithJoy, featuring:
+
+### Colors
+- **Primary**: Sage green (#7FA28A) for a calming, natural feel
+- **Background**: Warm cream (#FFFBF6) for comfort
+- **Surface**: Pure white (#FFFFFF) for content areas
+- **Brand Scale**: 50-900 sage color variations for subtle accents
+
+### Typography
+- **Font**: Open Sans (weights 400/600/700) loaded via next/font/google
+- **Display**: `.display` class for headings with tighter letter spacing
+- **Scale**: Responsive typography with proper line heights
+
+### Components
+- **Cards**: Rounded corners (rounded-2xl), subtle shadows, brand borders
+- **Buttons**: Primary, secondary, and ghost variants with hover states
+- **Links**: Underlined with offset for better readability
+- **Forms**: Consistent styling with focus rings and transitions
+
+### Dark Mode
+Enable dark mode by setting `data-theme="dark"` on the html element. The theme preview page (`/theme-preview`) demonstrates all design tokens and components.
+
+### Customization
+- Edit CSS variables in `globals.css` to change colors
+- Use Tailwind classes like `bg-primary`, `text-ink`, `border-brand-200`
+- All components use semantic color tokens for consistency
 
 ## Examples
 See `examples/guests_minimal.csv` and `examples/guests_messy.csv`.

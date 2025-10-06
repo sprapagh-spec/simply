@@ -50,7 +50,7 @@ export default function ImportGuestsPage() {
       return null;
     };
     setMapping({
-      email: pick(['email']) ,
+      email: pick(['email']),
       first_name: pick(['first_name', 'first name', 'firstname']) ?? hdrs[0] ?? '',
       last_name: pick(['last_name', 'last name', 'lastname']) ?? hdrs[1] ?? '',
       household: pick(['household', 'household name']),
@@ -121,30 +121,30 @@ export default function ImportGuestsPage() {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-60 border-r bg-[var(--surface)]">
+      <aside className="w-60 border-r bg-surface">
         <div className="p-6">
-          <h1 className="text-2xl font-bold text-[var(--ink)]">SimplyGift</h1>
-          <p className="text-sm text-[var(--muted)] mt-1">Guest Invite Management</p>
+          <h1 className="text-2xl font-bold text-ink">SimplyGift</h1>
+          <p className="text-sm text-muted mt-1">Guest Invite Management</p>
         </div>
         <nav className="flex flex-col gap-1 p-2">
-          <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--muted)] hover:bg-gray-50">Guests</a>
-          <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--muted)] hover:bg-gray-50">Gifts</a>
+          <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50">Guests</a>
+          <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-muted hover:bg-brand-50">Gifts</a>
         </nav>
       </aside>
       <main className="flex-1 p-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[var(--ink)]">Import Guests</h1>
-            <p className="text-[var(--muted)] mt-2">Import your guest list from CSV or Google Sheets</p>
+            <h1 className="display text-3xl md:text-4xl text-ink">Import Guests</h1>
+            <p className="text-muted mt-2">Import your guest list from CSV or Google Sheets</p>
           </div>
           
           {/* Google Sheets Import */}
-          <div className="card p-8 mb-6">
+          <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8 mb-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="text-3xl">📊</div>
               <div>
-                <h2 className="text-xl font-semibold text-[var(--ink)]">Import from Google Sheets</h2>
-                <p className="text-[var(--muted)]">Paste a shareable link to import directly</p>
+                <h2 className="font-semibold text-xl text-ink">Import from Google Sheets</h2>
+                <p className="text-muted">Paste a shareable link to import directly</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -153,28 +153,28 @@ export default function ImportGuestsPage() {
                 placeholder="https://docs.google.com/spreadsheets/d/..."
                 value={googleSheetsUrl}
                 onChange={(e) => setGoogleSheetsUrl(e.target.value)}
-                className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
               />
               <button
                 onClick={loadGoogleSheets}
                 disabled={loadingSheets || !googleSheetsUrl.trim()}
-                className="btn-primary disabled:opacity-50"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all disabled:opacity-50"
               >
                 {loadingSheets ? 'Loading...' : 'Load from Google Sheets'}
               </button>
-              <p className="text-sm text-[var(--muted)] flex items-center gap-2">
+              <p className="text-sm text-muted flex items-center gap-2">
                 💡 Make sure your Google Sheet is set to "Anyone with the link can view"
               </p>
             </div>
           </div>
 
           {/* CSV File Upload */}
-          <div className="card p-8">
+          <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8">
             <div className="flex items-center gap-3 mb-6">
               <div className="text-3xl">📁</div>
               <div>
-                <h2 className="text-xl font-semibold text-[var(--ink)]">Or Upload CSV File</h2>
-                <p className="text-[var(--muted)]">Upload a CSV file from your computer</p>
+                <h2 className="font-semibold text-xl text-ink">Or Upload CSV File</h2>
+                <p className="text-muted">Upload a CSV file from your computer</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -185,10 +185,10 @@ export default function ImportGuestsPage() {
                   const f = e.target.files?.[0];
                   if (f) onFile(f);
                 }}
-                className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+                className="w-full rounded-2xl border border-brand-200 bg-surface p-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
               />
               {fileName && (
-                <div className="flex items-center gap-2 text-sm text-[var(--success)]">
+                <div className="flex items-center gap-2 text-sm text-success">
                   ✅ Loaded {fileName}
                 </div>
               )}
@@ -196,16 +196,16 @@ export default function ImportGuestsPage() {
           </div>
 
           {headers.length > 0 && mapping && (
-            <div className="card p-8 mt-6">
-              <h2 className="text-xl font-semibold text-[var(--ink)] mb-6">Map Columns</h2>
+            <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8 mt-6">
+              <h2 className="font-semibold text-xl text-ink mb-6">Map Columns</h2>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {defaultFields.map((f) => (
                   <div key={f} className="space-y-2">
-                    <label className="text-sm font-medium text-[var(--ink)] capitalize">
+                    <label className="text-sm font-medium text-ink capitalize">
                       {f.replace('_', ' ')}
                     </label>
                     <select
-                      className="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+                      className="w-full rounded-2xl border border-brand-200 bg-surface p-3 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent transition-all"
                       value={(mapping as any)[f] ?? ''}
                       onChange={(e) => setMapping({ ...mapping, [f]: e.target.value || null })}
                     >
@@ -218,7 +218,7 @@ export default function ImportGuestsPage() {
                 ))}
               </div>
               <button
-                className="btn-primary mt-6"
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all mt-6"
                 onClick={onPreview}
               >
                 Validate & Preview
@@ -228,26 +228,26 @@ export default function ImportGuestsPage() {
 
           {preview && (
             <div className="space-y-6 mt-6">
-              <div className="card p-8">
-                <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Validation Results</h3>
+              <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8">
+                <h3 className="font-semibold text-xl text-ink mb-4">Validation Results</h3>
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="text-center p-4 rounded-2xl bg-green-50">
-                    <div className="text-2xl font-bold text-green-600">{preview.cleaned.length}</div>
-                    <div className="text-sm text-green-700">Valid Rows</div>
+                  <div className="text-center p-4 rounded-2xl bg-brand-50">
+                    <div className="text-2xl font-bold text-success">{preview.cleaned.length}</div>
+                    <div className="text-sm text-success">Valid Rows</div>
                   </div>
-                  <div className="text-center p-4 rounded-2xl bg-red-50">
-                    <div className="text-2xl font-bold text-red-600">{preview.errors.length}</div>
-                    <div className="text-sm text-red-700">Errors</div>
+                  <div className="text-center p-4 rounded-2xl bg-accent">
+                    <div className="text-2xl font-bold text-danger">{preview.errors.length}</div>
+                    <div className="text-sm text-danger">Errors</div>
                   </div>
-                  <div className="text-center p-4 rounded-2xl bg-blue-50">
-                    <div className="text-2xl font-bold text-blue-600">{preview.households.length}</div>
-                    <div className="text-sm text-blue-700">Households</div>
+                  <div className="text-center p-4 rounded-2xl bg-brand-50">
+                    <div className="text-2xl font-bold text-primary">{preview.households.length}</div>
+                    <div className="text-sm text-primary">Households</div>
                   </div>
                 </div>
                 {preview.errors.length > 0 && (
-                  <div className="mt-4 p-4 rounded-2xl bg-red-50">
-                    <h4 className="font-medium text-red-800 mb-2">Errors Found:</h4>
-                    <ul className="text-sm text-red-700 space-y-1">
+                  <div className="mt-4 p-4 rounded-2xl bg-accent">
+                    <h4 className="font-medium text-danger mb-2">Errors Found:</h4>
+                    <ul className="text-sm text-danger space-y-1">
                       {preview.errors.slice(0, 5).map((e: any, i: number) => (
                         <li key={i}>Row {e.index + 1}: {e.issues.join(', ')}</li>
                       ))}
@@ -257,13 +257,13 @@ export default function ImportGuestsPage() {
                 )}
               </div>
               
-              <div className="card p-8">
-                <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Ready to Import</h3>
-                <p className="text-[var(--muted)] mb-6">
+              <div className="rounded-2xl shadow-sm border border-brand-100 bg-surface p-8">
+                <h3 className="font-semibold text-xl text-ink mb-4">Ready to Import</h3>
+                <p className="text-muted mb-6">
                   {preview.cleaned.length} guests will be imported with {preview.households.length} households detected.
                 </p>
                 <button
-                  className="btn-primary disabled:opacity-50"
+                  className="bg-primary text-primary-foreground px-6 py-3 rounded-2xl font-medium hover:bg-primary-hover focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 transition-all disabled:opacity-50"
                   onClick={onCommit}
                   disabled={submitting || preview.cleaned.length === 0}
                 >
@@ -277,4 +277,3 @@ export default function ImportGuestsPage() {
     </div>
   );
 }
-

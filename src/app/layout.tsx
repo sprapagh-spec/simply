@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${openSans.variable} font-sans min-h-screen bg-[var(--bg)] text-[var(--ink)] antialiased`}>
+    <html lang="en" suppressHydrationWarning className={openSans.variable}>
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>
