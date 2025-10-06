@@ -34,7 +34,7 @@ export async function getGuestsWithLastGift() {
     const guests = await prisma.guest.findMany({
       include: {
         gifts: {
-          orderBy: { receivedAt: 'desc' },
+          orderBy: { createdAt: 'desc' },
           take: 1,
         },
       },

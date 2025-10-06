@@ -79,7 +79,7 @@ export default async function GuestsPage() {
                             )}
                           </td>
                           <td className="px-6 py-4 text-muted text-[15px]">
-                            {lastGift ? lastGift.receivedAt.toLocaleDateString('en-US', {
+                            {lastGift ? lastGift.createdAt.toLocaleDateString('en-US', {
                               month: 'short',
                               day: 'numeric',
                               year: 'numeric'

@@ -13,7 +13,7 @@ const rowSchema = z.object({
   address: z.string().optional(),
 });
 
-export const previewSchema = z.object({
+const previewSchema = z.object({
   rows: z.array(z.record(z.string(), z.string())),
 });
 
@@ -29,7 +29,7 @@ export async function validateAndPreview(input: z.infer<typeof previewSchema>) {
   return { cleaned: dedupe.unique, duplicates: dedupe.duplicates, households, errors };
 }
 
-export const commitSchema = z.object({
+const commitSchema = z.object({
   rows: z.array(rowSchema),
 });
 
@@ -64,6 +64,7 @@ export async function commitImport(input: z.infer<typeof commitSchema>) {
           firstName: r.first_name,
           lastName: r.last_name,
           householdId: householdId ?? undefined,
+          rsvpStatus: 'NOT_INVITED',
           consentSource: 'implied',
         },
       });
