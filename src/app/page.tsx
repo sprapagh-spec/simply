@@ -1,58 +1,99 @@
 import { prisma } from '@/lib/prisma';
+import Link from 'next/link';
 
-export default async function HomePage() {
-  const [grossAgg, netAgg, countAgg, last7, last30, emailAgg] = await Promise.all([
-    prisma.gift.aggregate({ _sum: { amountGrossCents: true } }),
-    prisma.gift.aggregate({ _sum: { amountNetCents: true } }),
-    prisma.gift.aggregate({ _count: { _all: true } }),
-    prisma.gift.count({ where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } } }),
-    prisma.gift.count({ where: { createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } }),
-    prisma.email.groupBy({ by: ['status'], _count: { _all: true } }).catch(() => [] as any),
-  ]);
-  const totalGross = (grossAgg._sum.amountGrossCents ?? 0) / 100;
-  const totalNet = (netAgg._sum.amountNetCents ?? 0) / 100;
-  const avg = (grossAgg._sum.amountGrossCents ?? 0) / Math.max(1, countAgg._count._all) / 100;
-  const emailCounts = Object.fromEntries(emailAgg.map((e: any) => [e.status, e._count._all]));
+export default async function GuestsPage() {
+  const guests = await prisma.guest.findMany({ 
+    take: 50, 
+    orderBy: { createdAt: 'desc' }, 
+    include: { 
+      household: true,
+      gifts: {
+        select: {
+          amountGrossCents: true,
+          amountNetCents: true,
+          createdAt: true,
+        }
+      }
+    } 
+  });
 
   return (
     <div className="flex min-h-screen">
-      <aside className="w-60 border-r bg-card">
-        <div className="p-4 text-lg font-semibold">SimplyGift</div>
+      <aside className="w-60 border-r bg-[var(--surface)]">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-[var(--ink)]">SimplyGift</h1>
+          <p className="text-sm text-[var(--muted)] mt-1">Guest Invite Management</p>
+        </div>
         <nav className="flex flex-col gap-1 p-2">
-          <a href="/" className="rounded px-3 py-2 text-sm bg-blue-100 text-blue-900">Dashboard</a>
-          <a href="/guests" className="rounded px-3 py-2 text-sm hover:bg-gray-100">Guests</a>
-          <a href="/gifts" className="rounded px-3 py-2 text-sm hover:bg-gray-100">Gifts</a>
+          <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium bg-[var(--primary)] text-white">Guests</a>
+          <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--muted)] hover:bg-gray-50">Gifts</a>
         </nav>
       </aside>
-      <main className="flex-1 p-6">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
-        <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-lg border-2 border-green-200 bg-green-50 p-6 shadow-sm">
-            <div className="text-sm text-green-600 font-medium">Total Gross</div>
-            <div className="text-3xl font-bold text-green-800">${totalGross.toFixed(2)}</div>
+      <main className="flex-1 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-[var(--ink)]">Guest Management</h1>
+              <p className="text-[var(--muted)] mt-2">Import, invite, and track your guests and their gifts</p>
+            </div>
+            <div className="flex gap-3">
+              <Link href="/guests/import" className="btn-primary">Import Guests</Link>
+              <Link href="/api/exports/guests" className="btn-secondary">Export CSV</Link>
+            </div>
           </div>
-          <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-6 shadow-sm">
-            <div className="text-sm text-blue-600 font-medium">Total Net</div>
-            <div className="text-3xl font-bold text-blue-800">${totalNet.toFixed(2)}</div>
-          </div>
-          <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-6 shadow-sm">
-            <div className="text-sm text-purple-600 font-medium">Avg Gift</div>
-            <div className="text-3xl font-bold text-purple-800">${avg.toFixed(2)}</div>
-          </div>
-        </div>
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div className="rounded-lg border-2 border-orange-200 bg-orange-50 p-6 shadow-sm">
-            <div className="text-sm text-orange-600 font-medium">Gifts last 7 days</div>
-            <div className="text-3xl font-bold text-orange-800">{last7}</div>
-          </div>
-          <div className="rounded-lg border-2 border-indigo-200 bg-indigo-50 p-6 shadow-sm">
-            <div className="text-sm text-indigo-600 font-medium">Gifts last 30 days</div>
-            <div className="text-3xl font-bold text-indigo-800">{last30}</div>
-          </div>
-          <div className="rounded-lg border-2 border-pink-200 bg-pink-50 p-6 shadow-sm">
-            <div className="text-sm text-pink-600 font-medium">Email Status</div>
-            <div className="text-sm text-pink-800">sent: {emailCounts.sent ?? 0} • opened: {emailCounts.opened ?? 0} • clicked: {emailCounts.clicked ?? 0}</div>
-          </div>
+
+          {guests.length === 0 ? (
+            <div className="card p-12 text-center">
+              <div className="text-6xl mb-4">👥</div>
+              <h3 className="text-xl font-semibold text-[var(--ink)] mb-2">No guests yet</h3>
+              <p className="text-[var(--muted)] mb-6">Import your guest list from CSV or Google Sheets to get started</p>
+              <Link href="/guests/import" className="btn-primary">Import Guests</Link>
+            </div>
+          ) : (
+            <div className="card overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full">
+                  <thead className="bg-gray-50 border-b">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Name</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Email</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Household</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Status</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Lifetime Gross</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-[var(--ink)]">Last Gift</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {guests.map((g) => {
+                      const totalGross = g.gifts.reduce((sum, gift) => sum + gift.amountGrossCents, 0) / 100;
+                      const lastGift = g.gifts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0];
+                      
+                      return (
+                        <tr key={g.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <div className="font-medium text-[var(--ink)]">{g.firstName} {g.lastName}</div>
+                          </td>
+                          <td className="px-6 py-4 text-[var(--muted)]">{g.email ?? '—'}</td>
+                          <td className="px-6 py-4 text-[var(--muted)]">{g.household?.name ?? '—'}</td>
+                          <td className="px-6 py-4">
+                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              {g.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 font-medium">
+                            {totalGross > 0 ? `$${totalGross.toFixed(2)}` : '—'}
+                          </td>
+                          <td className="px-6 py-4 text-[var(--muted)]">
+                            {lastGift ? lastGift.createdAt.toLocaleDateString() : '—'}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -4,12 +4,8 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
 const items = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/guests', label: 'Guests' },
-  { href: '/households', label: 'Households' },
-  { href: '/campaigns', label: 'Campaigns' },
+  { href: '/', label: 'Guests' },
   { href: '/gifts', label: 'Gifts' },
-  { href: '/settings', label: 'Settings' },
 ];
 
 export function Sidebar() {
@@ -23,8 +19,8 @@ export function Sidebar() {
             key={i.href}
             href={i.href}
             className={clsx(
-              'rounded px-3 py-2 text-sm hover:bg-accent',
-              pathname === i.href && 'bg-accent'
+              'rounded px-3 py-2 text-sm hover:bg-gray-100',
+              pathname === i.href && 'bg-blue-100 text-blue-900'
             )}
           >
             {i.label}

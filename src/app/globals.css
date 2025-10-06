@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 :root {
+  /* Warm Design System */
+  --bg: #FFFAF7;
+  --surface: #FFFFFF;
+  --ink: #1F2937;
+  --muted: #6B7280;
+  --primary: #2563EB;
+  --accent: #EFD6E1;
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+  
+  /* Legacy shadcn tokens for compatibility */
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
@@ -25,34 +37,30 @@
   --radius: 0.5rem;
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 212.7 26.8% 83.9%;
-}
-
 @layer base {
   * {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    font-family: var(--font-open-sans), system-ui, sans-serif;
+    @apply bg-[var(--bg)] text-[var(--ink)];
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .card {
+    @apply bg-[var(--surface)] rounded-2xl shadow-sm border border-gray-100;
+  }
+  
+  .btn-primary {
+    @apply bg-[var(--primary)] text-white px-6 py-3 rounded-2xl font-medium hover:opacity-90 transition-opacity focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-[var(--surface)] text-[var(--ink)] px-6 py-3 rounded-2xl font-medium border border-gray-200 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2;
   }
 }
 

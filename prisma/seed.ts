@@ -40,12 +40,13 @@ async function main() {
     await prisma.gift.create({
       data: {
         guestId: (g as any).id,
+        method: 'card',
         amountGrossCents: fees.grossCents,
         platformFeeCents: fees.platformFeeCents,
         processingFeeCents: fees.processingFeeCents,
         amountNetCents: fees.netCents,
-        status: 'succeeded',
-        source: 'manual',
+        status: 'cleared',
+        memo: 'Sample gift',
       },
     });
   }

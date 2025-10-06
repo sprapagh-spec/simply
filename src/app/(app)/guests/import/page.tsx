@@ -120,109 +120,161 @@ export default function ImportGuestsPage() {
   }
 
   return (
-    <main className="p-6">
-      <h1 className="text-xl font-semibold">Import Guests</h1>
-      
-      {/* Google Sheets Import */}
-      <div className="mt-4 rounded-lg border-2 border-blue-200 bg-blue-50 p-6">
-        <h2 className="text-lg font-semibold text-blue-800 mb-3">📊 Import from Google Sheets</h2>
-        <div className="space-y-3">
-          <input
-            type="url"
-            placeholder="Paste Google Sheets shareable link here..."
-            value={googleSheetsUrl}
-            onChange={(e) => setGoogleSheetsUrl(e.target.value)}
-            className="w-full rounded border border-blue-300 bg-white p-3 text-sm"
-          />
-          <button
-            onClick={loadGoogleSheets}
-            disabled={loadingSheets || !googleSheetsUrl.trim()}
-            className="rounded bg-blue-600 px-4 py-2 text-white text-sm hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loadingSheets ? 'Loading...' : 'Load from Google Sheets'}
-          </button>
-          <p className="text-xs text-blue-600">
-            💡 Make sure your Google Sheet is set to "Anyone with the link can view"
-          </p>
+    <div className="flex min-h-screen">
+      <aside className="w-60 border-r bg-[var(--surface)]">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-[var(--ink)]">SimplyGift</h1>
+          <p className="text-sm text-[var(--muted)] mt-1">Guest Invite Management</p>
         </div>
-      </div>
-
-      {/* CSV File Upload */}
-      <div className="mt-6 rounded-lg border-2 border-gray-200 bg-gray-50 p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-3">📁 Or Upload CSV File</h2>
-        <input
-          type="file"
-          accept=".csv,text/csv"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) onFile(f);
-          }}
-          className="w-full rounded border border-gray-300 bg-white p-3 text-sm"
-        />
-        {fileName && <p className="mt-2 text-sm text-gray-600">✅ Loaded {fileName}</p>}
-      </div>
-
-      {headers.length > 0 && mapping && (
-        <div className="mt-6 rounded border p-4">
-          <h2 className="font-medium">Map Columns</h2>
-          <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {defaultFields.map((f) => (
-              <label key={f} className="flex items-center gap-2 text-sm">
-                <span className="w-28 capitalize">{f.replace('_', ' ')}</span>
-                <select
-                  className="w-full rounded border bg-background p-2"
-                  value={(mapping as any)[f] ?? ''}
-                  onChange={(e) => setMapping({ ...mapping, [f]: e.target.value || null })}
-                >
-                  <option value="">—</option>
-                  {headers.map((h) => (
-                    <option key={h} value={h}>{h}</option>
-                  ))}
-                </select>
-              </label>
-            ))}
+        <nav className="flex flex-col gap-1 p-2">
+          <a href="/" className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--muted)] hover:bg-gray-50">Guests</a>
+          <a href="/gifts" className="rounded-xl px-4 py-3 text-sm font-medium text-[var(--muted)] hover:bg-gray-50">Gifts</a>
+        </nav>
+      </aside>
+      <main className="flex-1 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-[var(--ink)]">Import Guests</h1>
+            <p className="text-[var(--muted)] mt-2">Import your guest list from CSV or Google Sheets</p>
           </div>
-          <button
-            className="mt-4 rounded bg-primary px-3 py-2 text-primary-foreground text-sm"
-            onClick={onPreview}
-          >
-            Validate & Preview
-          </button>
-        </div>
-      )}
+          
+          {/* Google Sheets Import */}
+          <div className="card p-8 mb-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="text-3xl">📊</div>
+              <div>
+                <h2 className="text-xl font-semibold text-[var(--ink)]">Import from Google Sheets</h2>
+                <p className="text-[var(--muted)]">Paste a shareable link to import directly</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <input
+                type="url"
+                placeholder="https://docs.google.com/spreadsheets/d/..."
+                value={googleSheetsUrl}
+                onChange={(e) => setGoogleSheetsUrl(e.target.value)}
+                className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              />
+              <button
+                onClick={loadGoogleSheets}
+                disabled={loadingSheets || !googleSheetsUrl.trim()}
+                className="btn-primary disabled:opacity-50"
+              >
+                {loadingSheets ? 'Loading...' : 'Load from Google Sheets'}
+              </button>
+              <p className="text-sm text-[var(--muted)] flex items-center gap-2">
+                💡 Make sure your Google Sheet is set to "Anyone with the link can view"
+              </p>
+            </div>
+          </div>
 
-      {preview && (
-        <div className="mt-6 space-y-4">
-          <div className="rounded border p-4">
-            <h3 className="font-medium">Validation</h3>
-            <p className="text-sm text-muted-foreground">Valid rows: {preview.cleaned.length}, Errors: {preview.errors.length}</p>
-            {preview.errors.length > 0 && (
-              <ul className="mt-2 list-disc pl-5 text-sm">
-                {preview.errors.slice(0, 5).map((e: any, i: number) => (
-                  <li key={i}>Row {e.index + 1}: {e.issues.join(', ')}</li>
+          {/* CSV File Upload */}
+          <div className="card p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="text-3xl">📁</div>
+              <div>
+                <h2 className="text-xl font-semibold text-[var(--ink)]">Or Upload CSV File</h2>
+                <p className="text-[var(--muted)]">Upload a CSV file from your computer</p>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <input
+                type="file"
+                accept=".csv,text/csv"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onFile(f);
+                }}
+                className="w-full rounded-2xl border border-gray-200 bg-white p-4 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+              />
+              {fileName && (
+                <div className="flex items-center gap-2 text-sm text-[var(--success)]">
+                  ✅ Loaded {fileName}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {headers.length > 0 && mapping && (
+            <div className="card p-8 mt-6">
+              <h2 className="text-xl font-semibold text-[var(--ink)] mb-6">Map Columns</h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {defaultFields.map((f) => (
+                  <div key={f} className="space-y-2">
+                    <label className="text-sm font-medium text-[var(--ink)] capitalize">
+                      {f.replace('_', ' ')}
+                    </label>
+                    <select
+                      className="w-full rounded-2xl border border-gray-200 bg-white p-3 text-sm focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent"
+                      value={(mapping as any)[f] ?? ''}
+                      onChange={(e) => setMapping({ ...mapping, [f]: e.target.value || null })}
+                    >
+                      <option value="">—</option>
+                      {headers.map((h) => (
+                        <option key={h} value={h}>{h}</option>
+                      ))}
+                    </select>
+                  </div>
                 ))}
-                {preview.errors.length > 5 && <li>…and more</li>}
-              </ul>
-            )}
-          </div>
-          <div className="rounded border p-4">
-            <h3 className="font-medium">Duplicates Detected</h3>
-            <p className="text-sm text-muted-foreground">{preview.duplicates.length} potential duplicates</p>
-          </div>
-          <div className="rounded border p-4">
-            <h3 className="font-medium">Household Inference</h3>
-            <p className="text-sm text-muted-foreground">{preview.households.length} inferred groups</p>
-          </div>
-          <button
-            className="rounded bg-primary px-3 py-2 text-primary-foreground text-sm disabled:opacity-50"
-            onClick={onCommit}
-            disabled={submitting || preview.cleaned.length === 0}
-          >
-            {submitting ? 'Committing…' : 'Commit Import'}
-          </button>
+              </div>
+              <button
+                className="btn-primary mt-6"
+                onClick={onPreview}
+              >
+                Validate & Preview
+              </button>
+            </div>
+          )}
+
+          {preview && (
+            <div className="space-y-6 mt-6">
+              <div className="card p-8">
+                <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Validation Results</h3>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center p-4 rounded-2xl bg-green-50">
+                    <div className="text-2xl font-bold text-green-600">{preview.cleaned.length}</div>
+                    <div className="text-sm text-green-700">Valid Rows</div>
+                  </div>
+                  <div className="text-center p-4 rounded-2xl bg-red-50">
+                    <div className="text-2xl font-bold text-red-600">{preview.errors.length}</div>
+                    <div className="text-sm text-red-700">Errors</div>
+                  </div>
+                  <div className="text-center p-4 rounded-2xl bg-blue-50">
+                    <div className="text-2xl font-bold text-blue-600">{preview.households.length}</div>
+                    <div className="text-sm text-blue-700">Households</div>
+                  </div>
+                </div>
+                {preview.errors.length > 0 && (
+                  <div className="mt-4 p-4 rounded-2xl bg-red-50">
+                    <h4 className="font-medium text-red-800 mb-2">Errors Found:</h4>
+                    <ul className="text-sm text-red-700 space-y-1">
+                      {preview.errors.slice(0, 5).map((e: any, i: number) => (
+                        <li key={i}>Row {e.index + 1}: {e.issues.join(', ')}</li>
+                      ))}
+                      {preview.errors.length > 5 && <li>…and {preview.errors.length - 5} more</li>}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              
+              <div className="card p-8">
+                <h3 className="text-lg font-semibold text-[var(--ink)] mb-4">Ready to Import</h3>
+                <p className="text-[var(--muted)] mb-6">
+                  {preview.cleaned.length} guests will be imported with {preview.households.length} households detected.
+                </p>
+                <button
+                  className="btn-primary disabled:opacity-50"
+                  onClick={onCommit}
+                  disabled={submitting || preview.cleaned.length === 0}
+                >
+                  {submitting ? 'Importing…' : 'Import Guests'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </main>
+      </main>
+    </div>
   );
 }
 
