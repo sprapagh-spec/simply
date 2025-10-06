@@ -40,8 +40,8 @@ export async function POST(request: Request) {
           platformFeeCents: fees.platformFeeCents,
           processingFeeCents: fees.processingFeeCents,
           amountNetCents: fees.netCents,
-          status: 'succeeded',
-          source: 'stripe',
+          status: 'cleared',
+          memo: 'Stripe payment',
         },
       });
     }

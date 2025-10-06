@@ -24,13 +24,14 @@ export async function GET() {
     'guest_id',
     'guest_email',
     'guest_name',
+    'method',
     'gross_cents',
     'platform_fee_cents',
     'processing_fee_cents',
     'net_cents',
     'currency',
     'status',
-    'source',
+    'memo',
     'created_at',
   ];
   const lines = [toCsvLine(header)];
@@ -41,13 +42,14 @@ export async function GET() {
         g.guestId,
         g.guest.email ?? '',
         `${g.guest.firstName} ${g.guest.lastName}`.trim(),
+        g.method,
         g.amountGrossCents,
         g.platformFeeCents,
         g.processingFeeCents,
         g.amountNetCents,
         g.currency,
         g.status,
-        g.source,
+        g.memo ?? '',
         g.createdAt.toISOString(),
       ])
     );

@@ -81,7 +81,7 @@ export default async function GiftsPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-muted">
-                          {gift.receivedAt.toLocaleDateString()}
+                          {gift.createdAt.toLocaleDateString()}
                         </td>
                       </tr>
                     ))}
